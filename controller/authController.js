@@ -26,6 +26,12 @@ const createSendToken = (user,statusCode,res)=>{
 };
 
 exports.signup = catchAsync(async (req,res,next)=>{
+    
+    const existUser = await User.findOne({email:req.body.email});
+    if(existUser && existUser.active === false){
+        await User.findOneAndDelete({email:req.body.email})
+    }
+
     const user = await User.create({
         username:req.body.username,
         name:req.body.name,
@@ -53,6 +59,7 @@ exports.signup = catchAsync(async (req,res,next)=>{
         await user.save({validateBeforeSave:false});
         next(error)
     }
+
 });
 
 exports.confirmSignup = catchAsync(async(req,res,next)=>{

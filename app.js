@@ -9,8 +9,10 @@ dotenv.config();
 app.use(express.json());
 
 const authRoute = require('./routes/authRoute');
+const userRoute = require('./routes/userRoute');
 
-app.use('/api',authRoute)
+app.use('/api',authRoute);
+app.use('/api',userRoute);
 
 app.all('*',(req,res,next)=>{
     return next(new AppError('path not found',404))

@@ -13,6 +13,12 @@ const userSchema = new mongoose.Schema({
         required:true,
         unique:[true,'username already exists']
     },
+    image:{
+        type:String
+    },
+    imageCover:{
+        type:String
+    },
     email:{
         type:String,
         required:true,
@@ -106,11 +112,5 @@ userSchema.pre('save',function(next){
     this.passwordupdatedAt = Date.now() - 1000;
     next();
 })
-
-
-// userSchema.pre(/^find/,function(next){
-//     this.find({active:{$ne:false}});
-//     next();
-// })
 
 module.exports = mongoose.model('User',userSchema);
