@@ -84,4 +84,21 @@ exports.deleteUser = catchAsync(async(req,res,next)=>{
         status:'success',
         message:'user deleted successfully'
     })
+});
+
+exports.searchUser = catchAsync(async (req,res,next)=>{
+    const search = req.query.search;
+    const results = await User.find({
+        $or:[
+            {name:{$regex:search,$options:"xi"}},
+            {username:{$regex:search,$options:"xi"}}
+        ]
+    })
+    res.status(200).json({
+        status:'success',
+        data:{
+            results,
+            resultLength : results.length
+        }
+    })
 })
