@@ -49,7 +49,7 @@ exports.resizeUserImages = catchAsync(async (req,res,next)=>{
 
 
 exports.getAllUsers = catchAsync(async(req,res,next)=>{
-    const users = await User.find({active:true});
+    const users = await User.find({active:true}).populate('posts');
     res.status(200).json({
         status:'success',
         data:{
@@ -99,6 +99,39 @@ exports.searchUser = catchAsync(async (req,res,next)=>{
         data:{
             results,
             resultLength : results.length
+        }
+    })
+})
+
+exports.getUser = catchAsync(async (req,res,next)=>{
+    const user = await User.findOne({username:req.query.username}).populate('posts');
+    res.status(200).json({
+        status:'success',
+        data:{
+            user
+        }
+    })
+})
+
+exports.userLocation = catchAsync(async (req,res,next)=>{
+    const {coordinates,country,city} = req.body
+    if(!coordinates || country || city){
+        return next(new AppError('this fields is required',400))
+    }
+    const user = await User.findByIdAndUpdate(req.user.id,{
+        location:{
+            coordinates:coordinates,
+            country:country,
+            city:city
+        }
+    },{
+        new:true,
+        runValidators:true
+    });
+    res.status(200).json({
+        status:'success',
+        data:{
+            user
         }
     })
 })

@@ -6,6 +6,10 @@ router.get('/all-users',userController.getAllUsers);
 
 router.get('/search-user',userController.searchUser);
 
+router.get('/user',userController.getUser);
+
+router.post('/user-location',authController.protect,userController.userLocation);
+
 router.put('/update-user-info/:username',authController.protect,userController.uploadUserImages,userController.resizeUserImages,userController.updateUserInfo);
 
 router.delete('/delete-user',authController.protect,userController.deleteUser);

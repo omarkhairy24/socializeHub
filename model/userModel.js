@@ -59,7 +59,8 @@ const userSchema = new mongoose.Schema({
             enum:['Point']
         },
         coordinates:[Number],
-        address:String
+        country:String,
+        city:String
     },
     active:{
         type:Boolean,
@@ -78,6 +79,7 @@ const userSchema = new mongoose.Schema({
     toJSON:{virtuals:true},
     toObject:{virtuals:true}
 });
+
 
 userSchema.methods.createRegisterToken = function(){
     const token = crypto.randomBytes(3).toString('hex');
@@ -112,5 +114,11 @@ userSchema.pre('save',function(next){
     this.passwordupdatedAt = Date.now() - 1000;
     next();
 })
+
+userSchema.virtual('posts',{
+    ref:'Post',
+    foreignField:'user',
+    localField:'_id'
+});
 
 module.exports = mongoose.model('User',userSchema);
