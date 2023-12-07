@@ -15,7 +15,11 @@ const postSchema = new mongoose.Schema({
     likedBy:[{
         type:mongoose.Schema.ObjectId,
         ref:'User'
-    }]
+    }],
+    isLiked:{
+        type:Boolean,
+        default:false
+    }
 },{
     timestamps:true,
     toJSON:{virtuals:true},

@@ -87,25 +87,22 @@ exports.deletePost = catchAsync(async (req,res,next)=>{
 });
 
 exports.Like = catchAsync(async (req,res,next) =>{
-    let isLiked;
     const post = await Post.findById(req.body.id);
     const arr = post.likedBy.some(fn =>{
         if(fn.equals(req.user.id)){
-            isLiked = false
+            post.isLiked = false
             return post.likedBy.pull(fn)
         }
     });
     if(arr === false){
-        isLiked = true
+        post.isLiked = true
         post.likedBy.push(req.user.id)
     }
     await post.save();
     res.status(200).json({
         status:'success',
         data:{
-            post,
-            likeCount:post.likes,
-            isLiked
+            post
         }
     })
 });
