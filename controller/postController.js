@@ -3,6 +3,7 @@ const catchAsync = require('../util/catchAsync');
 const AppError = require('../util/AppError');
 const multer = require('multer');
 const sharp = require('sharp');
+const Comment = require('../model/commentModel');
 
 const multerStorage = multer.memoryStorage();
 
@@ -79,7 +80,8 @@ exports.deletePost = catchAsync(async (req,res,next)=>{
     if(post.user.id.toString() !== req.user.id){
         return next(new AppError('not allowed',403))
     }
-    await Post.findByIdAndDelete(req.body.id)
+    await Post.findByIdAndDelete(req.body.id);
+    await Comment.deleteMany({post:req.body.id})
     res.status(200).json({
         status:'success',
         message:'post deleted successfully'
@@ -90,30 +92,37 @@ exports.Like = catchAsync(async (req,res,next) =>{
     const post = await Post.findById(req.body.id);
     const arr = post.likedBy.some(fn =>{
         if(fn.equals(req.user.id)){
-            post.isLiked = false
             return post.likedBy.pull(fn)
         }
     });
     if(arr === false){
-        post.isLiked = true
         post.likedBy.push(req.user.id)
     }
     await post.save();
+    const isLiked = post.isLiked(req.user.id);
     res.status(200).json({
         status:'success',
         data:{
-            post
+            post,
+            isLiked
         }
     })
 });
 
-
 exports.getPost = catchAsync(async(req,res,next)=>{
     const post = await Post.findById(req.params.id).populate('comments');
+    const isLiked = post.isLiked(req.user.id);
+    const comments = await Comment.find({post:req.params.id});
+    const commentsWithLike = comments.map(comment =>({
+        ...comment.toObject(),
+        isLiked:comment.isLiked(req.user.id)
+    }))
+    post.comments = commentsWithLike
     res.status(200).json({
         status:'success',
         data:{
-            post
+            post,
+            isLiked
         }
     })
 })

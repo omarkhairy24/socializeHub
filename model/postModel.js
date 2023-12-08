@@ -15,11 +15,7 @@ const postSchema = new mongoose.Schema({
     likedBy:[{
         type:mongoose.Schema.ObjectId,
         ref:'User'
-    }],
-    isLiked:{
-        type:Boolean,
-        default:false
-    }
+    }]
 },{
     timestamps:true,
     toJSON:{virtuals:true},
@@ -46,6 +42,12 @@ postSchema.pre(/^find/,function(next){
         select:'name image'
     });
     next();
+})
+
+postSchema.virtual('isLiked').get(function(){
+    return ((userId)=>{
+        return this.likedBy.some(fn => fn.equals(userId));
+    })
 })
 
 module.exports = mongoose.model('Post',postSchema);

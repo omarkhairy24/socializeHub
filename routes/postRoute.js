@@ -2,7 +2,7 @@ const router = require('express').Router();
 const authController = require('../controller/authController');
 const postController = require('../controller/postController');
 
-router.get('/post/:id',postController.getPost);
+router.get('/post/:id',authController.protect,postController.getPost);
 
 router.patch('/likes',authController.protect,postController.Like);
 
