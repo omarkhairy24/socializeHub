@@ -4,7 +4,7 @@ const connectionController = require('../controller/connectionController');
 
 router.get('/requests',authController.protect,connectionController.getRequests);
 
-router.get('/near-suggestions',authController.protect,connectionController.getDistanceSuggestions);
+router.get('/near-suggestions',authController.protect,connectionController.getNearSuggestions);
 
 router.get('/suggestions',authController.protect,connectionController.getFriendsSuggestions);
 

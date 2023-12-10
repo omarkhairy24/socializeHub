@@ -63,7 +63,7 @@ exports.rejectRequest = catchAsync(async (req,res,next)=>{
 });
 
 
-exports.getDistanceSuggestions = catchAsync(async (req,res,next)=>{
+exports.getNearSuggestions = catchAsync(async (req,res,next)=>{
     const user = await User.findById(req.user.id).populate('connections');
     const distancesSuggestion = await User.aggregate([
         {
