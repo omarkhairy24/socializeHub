@@ -91,7 +91,11 @@ exports.searchUser = catchAsync(async (req,res,next)=>{
     const results = await User.find({
         $or:[
             {name:{$regex:search,$options:"xi"}},
-            {username:{$regex:search,$options:"xi"}}
+            {name:{$regex:search,$options:"i"}},
+            {name:{$regex:search,$options:"x"}},
+            {username:{$regex:search,$options:"xi"}},
+            {username:{$regex:search,$options:"i"}},
+            {username:{$regex:search,$options:"x"}},
         ]
     })
     res.status(200).json({
@@ -104,7 +108,7 @@ exports.searchUser = catchAsync(async (req,res,next)=>{
 })
 
 exports.getUser = catchAsync(async (req,res,next)=>{
-    const user = await User.findOne({username:req.query.username}).populate('posts');
+    const user = await User.findOne({username:req.query.username}).populate('posts').populate({path:'connections',select:'name username image'});
     res.status(200).json({
         status:'success',
         data:{
@@ -114,12 +118,13 @@ exports.getUser = catchAsync(async (req,res,next)=>{
 })
 
 exports.userLocation = catchAsync(async (req,res,next)=>{
-    const {coordinates,country,city} = req.body
-    if(!coordinates || country || city){
+    const {type,coordinates,country,city} = req.body
+    if(!type || ! coordinates || !country || !city){
         return next(new AppError('this fields is required',400))
     }
     const user = await User.findByIdAndUpdate(req.user.id,{
         location:{
+            type:type,
             coordinates:coordinates,
             country:country,
             city:city

@@ -1,6 +1,9 @@
 const authController = require('../controller/authController');
 const userController = require('../controller/userController');
 const router = require('express').Router();
+const connectionRoute = require('./connectionRoute');
+
+router.use('/:username',connectionRoute);
 
 router.get('/all-users',userController.getAllUsers);
 

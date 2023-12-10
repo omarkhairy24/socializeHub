@@ -26,7 +26,6 @@ const createSendToken = (user,statusCode,res)=>{
 };
 
 exports.signup = catchAsync(async (req,res,next)=>{
-    
     const existUser = await User.findOne({email:req.body.email});
     if(existUser && existUser.active === false){
         await User.findOneAndDelete({email:req.body.email})
@@ -41,7 +40,7 @@ exports.signup = catchAsync(async (req,res,next)=>{
         gender:req.body.gender
     })
     const token = user.createRegisterToken();
-    await user.save({validateBeforeSave:false})
+    await user.save({validateModifiedOnly:true})
     const message = `${token} is your register key`
     try {
         await sendEmail({

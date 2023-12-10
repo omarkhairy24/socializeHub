@@ -16,10 +16,12 @@ const authRoute = require('./routes/authRoute');
 const userRoute = require('./routes/userRoute');
 const postRoute = require('./routes/postRoute');
 const commentRoute = require('./routes/commentRoute');
+const connectionRoute = require('./routes/connectionRoute');
 
 app.use('/api',authRoute);
 app.use('/api',userRoute);
 app.use('/api',postRoute);
+app.use('/api',connectionRoute);
 app.use('/api',commentRoute);
 
 app.all('*',(req,res,next)=>{

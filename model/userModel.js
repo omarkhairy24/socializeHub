@@ -55,7 +55,6 @@ const userSchema = new mongoose.Schema({
     location:{
         type:{
             type:String,
-            default:'Point',
             enum:['Point']
         },
         coordinates:[Number],
@@ -80,6 +79,7 @@ const userSchema = new mongoose.Schema({
     toObject:{virtuals:true}
 });
 
+userSchema.index({location : '2dsphere'});
 
 userSchema.methods.createRegisterToken = function(){
     const token = crypto.randomBytes(3).toString('hex');
@@ -113,7 +113,7 @@ userSchema.pre('save',function(next){
     if(!this.isModified('password') || this.isNew) return next();
     this.passwordupdatedAt = Date.now() - 1000;
     next();
-})
+});
 
 userSchema.virtual('posts',{
     ref:'Post',
